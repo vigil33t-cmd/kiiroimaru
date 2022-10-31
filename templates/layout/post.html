@@ -1,0 +1,16 @@
+<div class="post">
+    <div class="post__head">
+        <span class="post__id">#{{ db.dereference(post)["id"] }}</span>
+        <span class="post__time">{{ db.dereference(post)["timestamp"] }}</span>
+    </div>
+    <div class="post__body">
+        <div class="post__text">
+            {% block post_text %}
+                {{ db.dereference(post)["text"] }}
+            {% endblock %}
+        </div>
+    </div>
+    <div class="post__replies">
+
+    </div>
+</div>

@@ -1,0 +1,191 @@
+* {
+    padding: 0;
+    margin: 0;
+    /* outline: 1px solid rgb(255, 0, 255); */
+}
+
+/* ======================================================== */
+
+body {
+    display: flex;
+    min-height: 100vh;
+    background-color: #D2D2D4;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 16px;
+    /* line-height: normal; */
+}
+
+.toTop__button {
+    color: white;
+    margin-top: 5px;
+    float: left;
+}
+
+.header .container {
+    align-items: center;
+}
+
+.container {
+    /* display: flex; */
+    /* flex-direction: column; */
+    width: 1100px;
+    margin: 0 auto;
+}
+
+.header {
+    justify-content: center;
+    height: 200px;
+    flex-shrink: 0;
+}
+
+.header__filler {
+    background-color: #E4E5EA;
+}
+
+.header__title {
+    color: white;
+}
+
+/* .header img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    filter: blur(10px);
+} */
+
+.page {
+    height: 100%;
+    padding: 10px;
+    background-color: #E4E5EA;
+}
+
+
+
+
+
+.post {
+    padding: 10px;
+    margin-bottom: 10px;
+    width: auto;
+    background-color: #cfdae6;
+    margin-left: 25px;
+}
+
+.post__text {
+    margin-top: 10px;
+}
+
+.post__attachments {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+
+.attachment {
+    flex-basis: 200px;
+}
+
+.attachment__info {
+    opacity: 0.4;
+}
+
+.attachment__content * {
+    width: 100%;
+    height: 100%;
+    outline: 1px dashed blue;
+    outline-offset: 1px;
+}
+
+.post__replies {
+    margin-top: 10px;
+}
+
+.post__id {
+    float: right
+}
+
+
+
+.thread__head {
+    padding: 10px;
+    margin-bottom: 10px;
+    width: auto;
+    border-top: 1px solid rgb(211, 215, 224);
+}
+
+
+
+
+
+.messagebox {
+    min-height: 100px;
+    background-color: lightgray;
+}
+
+.messagebox textarea{
+    height: 150px;
+    width: 100%;
+}
+
+
+.messagebox__attachments * {
+    max-height: 250px;
+    max-width: 250px;
+}
+
+
+
+
+
+
+
+
+
+.spoiler {
+    background-color: gray;
+    color: transparent;
+}
+
+.spoiler:hover {
+    color: white
+}
+
+.greentext {
+    color: green
+}
+
+
+
+
+.header__filler {
+    height: 200px;
+    width: 100%;
+}
+
+
+.header {
+    width: 100%;
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    transition: cubic-bezier(0.075, 0.82, 0.165, 1) .5s;
+}
+
+.header__title {
+    color: #363636;
+    font-weight: 600;
+}
+
+.title {
+    font-size: 50px;
+}
+
+.description {
+    font-size: 20px;
+}
+
+/* {content: {text: "ayyylmao", attachments: []}, id: 1337228, timestamp: 124315135} */
