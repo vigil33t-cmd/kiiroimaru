@@ -2,14 +2,13 @@ from pymongo import MongoClient
 from flask import Flask, request, render_template
 from werkzeug.utils import secure_filename
 from bson import DBRef
-#from bson import ObjectId
 
 app = Flask(__name__)
 app.secret_key = "133713371337"
 app.config['UPLOAD_FOLDER'] = 'uploads'
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-CONNECTION_STRING = "mongodb://localhost:27017"
+CONNECTION_STRING = "mongodb://90.151.59.128:27017"
 
 client = MongoClient(CONNECTION_STRING)
 db = client['yobach']
@@ -30,8 +29,9 @@ def renderBoard(board):
 
 @app.route("/<board>/<int:thread_id>")
 def renderThread(board, thread_id):
-    thread = db.posts.find({"id": thread_id})
-    return render_template("thread.html", thread=thread, db=db)
+    thread = db.get_collection(board).find({"is_thread": True, "id": thread_id})
+    # print(list(thread))
+    return render_template("thread.html", thread=list(thread)[0], db=db)
 
 
 @app.post('/api/upload')
@@ -44,7 +44,7 @@ def upload_file():
     return "invalid filetype"
     
 
-@app.post("/api/thread.create")
+@app.post("/api/thread.create") # Кто функции апи через точку пишет блять?
 def makeThread():
     data = request.values
 
@@ -65,7 +65,7 @@ def makeThread():
     }).inserted_id
 
     ref = DBRef("posts", inserted_post_id, "yobach")
-    db.get_collection(board).insert_one({"ref": ref, "is_thread": True})
+    db.get_collection(board).insert_one({"ref": ref, "is_thread": True, "id": post_id})
 
     return ""
 

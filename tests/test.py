@@ -11,7 +11,7 @@ response = r.post("http://localhost:5000/api/thread.create", data=data)
 print(response)
 
 # data = {
-#     "thread": 2,
+#     "thread": 1,
 #     "board": "b",
 #     "text": "Бамп."
 # }
