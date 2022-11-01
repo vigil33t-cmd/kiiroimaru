@@ -4,7 +4,10 @@
             <span class="post__id">#{{ db.dereference(thread["ref"])["id"]}}</span>
             <span class="post__time">{{ db.dereference(thread["ref"])["timestamp"] }}</span>
             <span class="post__title"><strong>{{ db.dereference(thread["ref"])["title"] }}</strong></span>
-            <a href="/b/{{ db.dereference(thread['ref'])['id'] }}">Перейти в тред</a>
+            {% if isThread == False %}
+                <a href="/b/{{ db.dereference(thread['ref'])['id'] }}">Перейти в тред</a>
+            {% endif %}
+
         </div>
         <div class="post__body">
             <div class="post__text">

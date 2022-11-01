@@ -24,14 +24,14 @@ def renderIndex():
 @app.route("/<board>/")
 def renderBoard(board):
     threads = db.get_collection(board).find({"is_thread": True})
-    return render_template("board.html", threads=threads, db=db)
+    return render_template("board.html", threads=threads, db=db, isThread=False)
 
 
 @app.route("/<board>/<int:thread_id>")
 def renderThread(board, thread_id):
     thread = db.get_collection(board).find({"is_thread": True, "id": thread_id})
     # print(list(thread))
-    return render_template("thread.html", thread=list(thread)[0], db=db)
+    return render_template("thread.html", thread=list(thread)[0], db=db, isThread=True)
 
 
 @app.post('/api/upload')
@@ -88,7 +88,7 @@ def answerThread():
     }).inserted_id
 
     ref = DBRef("posts", inserted_post_id, "yobach")
-    db.get_collection(board).insert_one({"ref": ref, "is_thread": False})
+    db.get_collection(board).insert_one({"ref": ref, "is_thread": False, "id": post_id})
     
     db.posts.update_one({"id": thread}, {'$push': {"posts": ref}})
 
