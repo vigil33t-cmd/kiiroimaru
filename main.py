@@ -1,5 +1,6 @@
 from pymongo import MongoClient
 from flask import Flask, request, render_template
+import pymongo
 from werkzeug.utils import secure_filename
 from bson import DBRef
 
@@ -23,14 +24,25 @@ def renderIndex():
 
 @app.route("/<board>/")
 def renderBoard(board):
+    try:
+        db.validate_collection(board)  # Try to validate a collection
+    except pymongo.errors.OperationFailure:
+        return render_template("404.html")
     threads = db.get_collection(board).find({"is_thread": True})
     return render_template("board.html", threads=threads, db=db, isThread=False)
 
 
 @app.route("/<board>/<int:thread_id>")
 def renderThread(board, thread_id):
+    try:
+        db.validate_collection(board)  # Try to validate a collection
+    except pymongo.errors.OperationFailure:
+        return render_template("404.html")
+    # print(db.get_collection(board).find({'id':thread_id}))
+    if list(db.get_collection(board).find({'id':thread_id})) == [] or db.get_collection(board).find_one({'id':thread_id})['is_thread'] == False or db.posts.find_one({'id':thread_id})['hidden'] == True:
+        print('a')
+        return render_template('404.html')
     thread = db.get_collection(board).find({"is_thread": True, "id": thread_id})
-    # print(list(thread))
     return render_template("thread.html", thread=list(thread)[0], db=db, isThread=True)
 
 
@@ -61,7 +73,8 @@ def makeThread():
         "is_thread": True,
         "title": title,
         "text": text,
-        "posts": []
+        "posts": [],
+        "hidden":False
     }).inserted_id
 
     ref = DBRef("posts", inserted_post_id, "yobach")
@@ -84,7 +97,9 @@ def answerThread():
         "timestamp": "13/03/37 13:37",
         "is_thread": False,
         "thread": thread,
-        "text": text
+        "text": text,
+        "hidden":False
+        
     }).inserted_id
 
     ref = DBRef("posts", inserted_post_id, "yobach")
@@ -94,4 +109,14 @@ def answerThread():
 
     return ""
     
+@app.post("/api/hide")
+def hide():
+    data = request.values
+    board = data.get("board")
+    id = int(data.get("id"))
+    
+    db.get_collection(board).update_one({"id":id}, {"$set": {"hidden": True}})
+    
+    return ""
+
 app.run(debug=True)

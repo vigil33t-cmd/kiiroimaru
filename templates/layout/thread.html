@@ -1,11 +1,11 @@
 <div class="thread">
     <div class="thread__head">
         <div class="post__head">
-            <span class="post__id">#{{ db.dereference(thread["ref"])["id"]}}</span>
+            <span class="post__id">#{{ db.dereference(thread["ref"])['id']}}</span>
             <span class="post__time">{{ db.dereference(thread["ref"])["timestamp"] }}</span>
             <span class="post__title"><strong>{{ db.dereference(thread["ref"])["title"] }}</strong></span>
             {% if isThread == False %}
-                <a href="/b/{{ db.dereference(thread['ref'])['id'] }}">Перейти в тред</a>
+                <a href="./{{ db.dereference(thread['ref'])['id'] }}">Перейти в тред</a>
             {% endif %}
 
         </div>
@@ -21,7 +21,29 @@
             </div>
         </div>
     </div>
-    {% for post in db.dereference(thread["ref"])["posts"] %} 
-        {% include "layout/post.html" %}
-    {% endfor %}
-</div>
+    {% if isThread == false %}
+
+        {% if db.dereference(thread["ref"])["posts"]|length > 3 %}
+            <div>
+                Пропущенно постов: {{db.dereference(thread["ref"])["posts"]|length -3 }} 
+                <br><br>
+            </div>
+            
+            {% for post in db.dereference(thread["ref"])["posts"][-3:] %} 
+            
+                {% include "layout/post.html" %}
+        
+            {% endfor %}
+        {%  else %}
+            {% for post in db.dereference(thread["ref"])["posts"] %} 
+            
+                {% include "layout/post.html" %}
+            {% endfor %}
+        {% endif %}
+    {% else %}
+            {% for post in db.dereference(thread["ref"])["posts"] %} 
+            
+            {% include "layout/post.html" %}
+        {% endfor %}
+    {% endif %}
+        </div>
