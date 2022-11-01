@@ -1,17 +1,17 @@
 <div class="thread">
     <div class="thread__head">
         <div class="post__head">
-            <span class="post__id">#{{ db.dereference(thread["ref"])['id']}}</span>
-            <span class="post__time">{{ db.dereference(thread["ref"])["timestamp"] }}</span>
-            <span class="post__title"><strong>{{ db.dereference(thread["ref"])["title"] }}</strong></span>
+            <span class="post__id">#{{ thread['id']}}</span>
+            <span class="post__time">{{ thread["timestamp"] }}</span>
+            <span class="post__title"><strong>{{ thread["title"] }}</strong></span>
             {% if isThread == False %}
-                <a href="./{{ db.dereference(thread['ref'])['id'] }}">Перейти в тред</a>
+                <a href="./{{ thread['id'] }}">Перейти в тред</a>
             {% endif %}
 
         </div>
         <div class="post__body">
             <div class="post__text">
-                {{db.dereference(thread["ref"])["text"]}}
+                {{ thread["text"] }}
             </div>
             <div class="post__attachments">
 
@@ -22,28 +22,30 @@
         </div>
     </div>
     {% if isThread == false %}
-
-        {% if db.dereference(thread["ref"])["posts"]|length > 3 %}
+        {% if thread["posts"]|length > 3 %}
             <div>
-                Пропущенно постов: {{db.dereference(thread["ref"])["posts"]|length -3 }} 
+                Пропущенно постов: {{ thread["posts"]|length -3 }} 
                 <br><br>
             </div>
             
-            {% for post in db.dereference(thread["ref"])["posts"][-3:] %} 
-            
-                {% include "layout/post.html" %}
-        
+            {# Временное решение. Если скрыть последний пост. Будет отрисовываться только два вместо трех. #}
+            {% for post in thread["posts"][-3:] %} 
+                {% if not db.dereference(post)["hidden"] %}
+                    {% include "layout/post.html" %}
+                {% endif %}
             {% endfor %}
         {%  else %}
-            {% for post in db.dereference(thread["ref"])["posts"] %} 
-            
-                {% include "layout/post.html" %}
+            {% for post in thread["posts"] %} 
+                {% if not db.dereference(post)["hidden"] %}
+                    {% include "layout/post.html" %}
+                {% endif %}
             {% endfor %}
         {% endif %}
     {% else %}
-            {% for post in db.dereference(thread["ref"])["posts"] %} 
-            
-            {% include "layout/post.html" %}
+        {% for post in thread["posts"] %} 
+            {% if not db.dereference(post)["hidden"] %}
+                {% include "layout/post.html" %}
+            {% endif %}
         {% endfor %}
     {% endif %}
-        </div>
+</div>

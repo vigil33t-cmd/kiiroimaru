@@ -7,8 +7,10 @@
         <div class="category__title">
             <p>Категория<p>
         </div>
-        <div class="category__content">
-            <a href="/b">/dev - Ворк ин поггерс.</a>
-        </div>
+        {% for board in boards %}
+            <div class="category__content">
+                <a href="/{{ board['board_name'] }}">/{{ board["board_name"] }} - {{ board["board_desc"] }}</a>
+            </div>
+        {% endfor %}
     </div>
 {% endblock %}
