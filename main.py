@@ -42,8 +42,8 @@ def renderThread(board, thread_id):
     if list(db.get_collection(board).find({'id':thread_id})) == [] or db.get_collection(board).find_one({'id':thread_id})['is_thread'] == False or db.posts.find_one({'id':thread_id})['hidden'] == True:
         print('a')
         return render_template('404.html')
-    thread = db.get_collection(board).find({"is_thread": True, "id": thread_id})
-    return render_template("thread.html", thread=list(thread)[0], db=db, isThread=True)
+    thread = db.get_collection(board).find_one({"is_thread": True, "id": thread_id})
+    return render_template("thread.html", thread=thread, db=db, isThread=True)
 
 
 @app.post('/api/upload')
