@@ -3,6 +3,7 @@ from flask import Flask, request, render_template, abort
 import pymongo
 from werkzeug.utils import secure_filename
 from bson import DBRef
+from datetime import datetime
 
 def page_not_found(e):
     return render_template("404.html"), 404
@@ -76,11 +77,12 @@ def thread_create():
     text = data.get("text")
 
     post_id = db.posts.count_documents({}) + 1
+    post_time = datetime.now().strftime("%d/%m/%Y %H:%M")
 
     # мб потом завернуть создание ссылки в функцию
     inserted_post_id = db.posts.insert_one({
         "id": post_id,
-        "timestamp": "13/03/37 13:37",
+        "timestamp": post_time,
         "is_thread": True,
         "title": title,
         "text": text,
@@ -101,10 +103,11 @@ def thread_answer():
     text = data.get("text")
 
     post_id = db.posts.count_documents({}) + 1
+    post_time = datetime.now().strftime("%d/%m/%Y %H:%M")
 
     inserted_post_id = db.posts.insert_one({
         "id": post_id,
-        "timestamp": "13/03/37 13:37",
+        "timestamp": post_time,
         "is_thread": False,
         "thread_id": thread_id, # Вместо айди поместить сюда DBRef ссылку на тред?
         "text": text,
