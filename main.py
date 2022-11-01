@@ -29,9 +29,8 @@ def renderBoard(board):
 
 @app.route("/<board>/<int:thread_id>")
 def renderThread(board, thread_id):
-    thread = db.get_collection(board).find({"is_thread": True, "id": thread_id})
-    # print(list(thread))
-    return render_template("thread.html", thread=list(thread)[0], db=db, isThread=True)
+    thread = db.get_collection(board).find_one({"is_thread": True, "id": thread_id})
+    return render_template("thread.html", thread=thread, db=db, isThread=True)
 
 
 @app.post('/api/upload')
