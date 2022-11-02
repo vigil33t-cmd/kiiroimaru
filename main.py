@@ -16,10 +16,6 @@ parser.add_simple_formatter("b", "<strong>%(value)s</strong>")
 parser.add_simple_formatter("i", "<em>%(value)s</em>")
 parser.add_simple_formatter("u", "<u>%(value)s</u>")
 parser.add_simple_formatter("s", "<strike>%(value)s</strike>")
-# parser.add_simple_formatter('>', "<span class='greentext'>>%(value)s</span>")
-
-# parser.add_simple_formatter('wiki', '<a href="http://wikipedia.org/wiki/%(value)s">%(value)s</a>')
-
 
 def page_not_found(e):
     return render_template("404.html"), 404
