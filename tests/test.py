@@ -2,7 +2,7 @@ import requests as r
 
 
 # data = {
-#     "board_id": 2,
+#     "board_id": 1,
 #     "title": "Еще один тестовый тред в тестовой борде bread",
 #     "text": "лорем ипсум"
 # }
@@ -11,7 +11,7 @@ import requests as r
 # print(response)
 
 # data = {
-#     "thread_id": 18,
+#     "thread_id": 2,
 #     "text": "пук"
 # }
 
@@ -26,9 +26,9 @@ import requests as r
 # response = r.post("http://localhost:5000/api/board.create", data=data)
 # print(response)
 
-# data = {
-#     "post_id": 48,
-# }
+data = {
+    "post_id": 4,
+}
 
-# response = r.post("http://localhost:5000/api/post.hide", data=data)
-# print(response)
+response = r.post("http://localhost:5000/api/post.hide", data=data)
+print(response)
