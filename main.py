@@ -1,18 +1,24 @@
 import re
 from uuid import uuid4
 from pymongo import MongoClient
-from flask import Flask, request, render_template, abort
+from flask import Flask, jsonify, request, render_template, abort, url_for, send_from_directory
 import pymongo
 from werkzeug.utils import secure_filename
 from bson import DBRef
 from datetime import datetime
 import bbcode
+import json
 
-parser = bbcode.Parser()
+# parser = bbcode.Parser()
+parser = bbcode.Parser(install_defaults=False)
 parser.add_simple_formatter('spoiler', '<span class="spoiler">%(value)s</span>')
+parser.add_simple_formatter("b", "<strong>%(value)s</strong>")
+parser.add_simple_formatter("i", "<em>%(value)s</em>")
+parser.add_simple_formatter("u", "<u>%(value)s</u>")
+parser.add_simple_formatter("s", "<strike>%(value)s</strike>")
 # parser.add_simple_formatter('>', "<span class='greentext'>>%(value)s</span>")
 
-parser.add_simple_formatter('wiki', '<a href="http://wikipedia.org/wiki/%(value)s">%(value)s</a>')
+# parser.add_simple_formatter('wiki', '<a href="http://wikipedia.org/wiki/%(value)s">%(value)s</a>')
 
 
 def page_not_found(e):
@@ -50,7 +56,7 @@ def board(board):
         if db.dereference(t)["hidden"]:
             continue
         threads.append(db.dereference(t))
-    return render_template("board.html", threads=threads, db=db, isThread=False, board=b, parser=parser)
+    return render_template("board.html", threads=threads, db=db, isThread=False, board=b, parser=parser, )
 
 
 @app.route("/<board>/<int:thread_id>")
@@ -68,27 +74,36 @@ def thread(board, thread_id):
 
     return render_template("thread.html", thread=thread, db=db, isThread=True, board=b, parser=parser)
 
+@app.route("/<board>/attachment/<int:post_id>/")
+def get_attachment(board, post_id):
+    attachment = db.dereference(db.posts.find_one({"id":post_id})['attachments'])
+    print(attachment)
+    return send_from_directory("attachments", f"{attachment['id']}.{attachment['origin_filename'].split('.')[-1]}", download_name=attachment['origin_filename'])
 
 @app.post('/api/upload')
 def upload_file():
+    data = request.values
     file = request.files['attachment']
     uuid = str(uuid4())
     db.attachments.insert_one({"origin_filename": file.filename, "id":uuid})
     file.save(f'attachments/{uuid}.{file.filename.split(".")[-1]}')
     print(file.filename)
-    return ""
+    return jsonify({"id":uuid})
 
 @app.post("/api/thread.create")
 def thread_create():
     data = request.values
-
+    
     board_id = int(data.get("board_id"))
     title = data.get("title")
     text = data.get("text")
 
     post_id = db.posts.count_documents({}) + 1
     post_time = datetime.now().strftime("%d/%m/%Y %H:%M")
-
+    attachment = []
+    if "attachment" in data:
+        
+        attachment = DBRef('attachments', db.attachments.find_one({"id":data['attachment']}), 'yobach')
     # мб потом завернуть создание ссылки в функцию
     inserted_post_id = db.posts.insert_one({
         "id": post_id,
@@ -97,11 +112,11 @@ def thread_create():
         "title": title,
         "text": text,
         "posts": [],
-        "hidden":False
+        "hidden":False,
     }).inserted_id
 
     ref = DBRef("posts", inserted_post_id, "yobach")
-    db.boards.update_one({"board_id": board_id}, {"$push": {"threads": ref}})
+    db.boards.update_one({"board_id": board_id}, {"$push": {"threads": ref, "attachment": attachment}})
 
     return ""
 
@@ -116,16 +131,21 @@ def thread_answer():
     post_time = datetime.now().strftime("%d/%m/%Y %H:%M")
     if not db.posts.find_one({"id": thread_id})['is_thread']:
         return ""
-
+    attachment = []
+    if "attachment" in data:
+        # print(data['attachment'])
+        # attachment = db.attachments.find_one({"id":str(data['attachment'])})
+        # print(attachment)
+        attachment = DBRef('attachments', db.attachments.find_one({"id":data['attachment']})['_id'], 'yobach')
     inserted_post_id = db.posts.insert_one({
         "id": post_id,
         "timestamp": post_time,
         "is_thread": False,
         "thread_id": thread_id, # Вместо айди поместить сюда DBRef ссылку на тред?
         "text": text,
-        "hidden": False
+        "hidden": False,
+        "attachments": attachment,
     }).inserted_id
-
     ref = DBRef("posts", inserted_post_id, "yobach")
     regex = re.findall(r"\B>>[0-9]+\b", text)
     if regex:
@@ -133,7 +153,7 @@ def thread_answer():
             if DBRef('posts', inserted_post_id, 'yobach') in db.posts.find_one({"id": int(reply[2::])})['replies']:
                 continue
             db.posts.update_one({"id": int(reply[2::])}, {'$push': {"replies": ref}})
-    db.posts.update_one({"id": thread_id}, {'$push': {"posts": ref}})
+    db.posts.update_one({"id": thread_id}, {'$push': {"posts": ref, "attachment": attachment}})
 
     return ""
 

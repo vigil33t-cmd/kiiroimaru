@@ -5,12 +5,25 @@
     </div>
     <div class="post__body">
         <div class="post__text">
-            {{url_for('attachments', filename='a5a2735e-35cf-4696-abb4-542a93a6fdac.jpg')}}
+            
             {% block post_text %}
                 {{ parser.format(db.dereference(post)["text"]) | safe }}
             {% endblock %}
         </div>
     </div>
+    {% if db.dereference(post)['attachments'] %}
+    <div class="post__attachments">
+        <div class="attachment">
+            <div class="attachment__info">pezda.jpg 128x128 (8mb)</div>
+            <div class="attachment__content">
+                <img src="/{{board["board_name"]}}/attachment/{{db.dereference(post)['id']}}/" alt="">
+            </div>
+        </div>
+    </div>
+    {% endif %}
+        
+    
+    
     {% if db.dereference(post)['replies'] %}
     <div class="post__replies">
         {% for reply in db.dereference(post)['replies'] %}

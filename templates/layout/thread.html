@@ -11,11 +11,20 @@
         </div>
         <div class="post__body">
             <div class="post__text">
+                <!-- {{board["board_name"]}} -->
                 {{ parser.format(thread["text"]) | safe }}
             </div>
+            
+            {% if thread[attachment] %}
             <div class="post__attachments">
-
-            </div>
+                        <div class="attachment">
+                            <div class="attachment__info">pezda.jpg 128x128 (8mb)</div>
+                            <div class="attachment__content">
+                                <img src="/{{board["board_name"]}}/attachment/{{thread['id']}}/" alt="">
+                            </div>
+                        </div>
+                    </div>
+            {% endif %}
             {% if thread['replies'] %}
             <div class="post__replies">
                     {% for reply in thread['replies'] %}
