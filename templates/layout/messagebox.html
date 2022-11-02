@@ -1,0 +1,18 @@
+<form id="messagebox" class="messagebox" method="post" action="/api/thread.answer" enctype="multipart/form-data" >
+    <div class="bb">
+        <button type="button" onclick="insertTag(this, '[spoiler]', '[/spoiler]')">Spoiler</button>
+        <button type="button" onclick="insertTag(this, '[b]', '[/b]')">Bold</button>
+        <button type="button" onclick="insertTag(this, '[i]', '[/i]')">Italic</button>
+        <button type="button" onclick="insertTag(this, '[u]', '[/u]')">Underlined</button>
+        <button type="button" onclick="insertTag(this, '[s]', '[/s]')">Striked</button>
+    </div>
+    <div class="text">
+        <textarea name="text"></textarea>
+        <input type="hidden" name="thread_id" value={{ thread["id"] }}>
+        <input type="submit" value="сенд">
+    </div>
+    <!-- <input type="file" name="files[]" id="file" multiple> -->
+    <!-- <div class="messagebox__attachments">
+
+    </div> -->
+</form>

@@ -6,14 +6,6 @@ var title = document.getElementsByClassName("title")[0];
 var description = document.getElementsByClassName("description")[0];
 
 window.onscroll = () => {
-    console.log(header.scrollTop, body.scrollTop, doc.scrollTop);
-    
-    // if (doc.scrollTop >= 200) {
-    //     header.style.position = "fixed"
-    // } else {
-    //     header.style.position = "static"
-    // }
-
     if (doc.scrollTop > 50) {
         header.style.height = `50px`
         description.style.display = "none"

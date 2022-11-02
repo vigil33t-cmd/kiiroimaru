@@ -15,12 +15,6 @@ body {
     /* line-height: normal; */
 }
 
-.toTop__button {
-    color: white;
-    margin-top: 5px;
-    float: left;
-}
-
 .header .container {
     align-items: center;
 }
@@ -45,13 +39,6 @@ body {
 .header__title {
     color: white;
 }
-
-/* .header img {
-    height: 100%;
-    width: 100%;
-    object-fit: cover;
-    filter: blur(10px);
-} */
 
 .page {
     height: 100%;
@@ -117,25 +104,37 @@ body {
 
 
 
-
+.bb {
+    /* flex-wrap: wrap; */
+    /* width: 100px; */
+    display: flex;
+    flex-direction: column;
+}
 
 .messagebox {
+    gap: 10px;
     min-height: 100px;
     background-color: lightgray;
+    padding: 10px;
+    display: flex;
 }
 
-.messagebox textarea{
-    height: 150px;
+.messagebox textarea {
+    min-height: 150px;
+    width: 100%;
+    resize: vertical;
+    padding: 5px; 
+    box-sizing: border-box
+}
+
+.text {
     width: 100%;
 }
-
 
 .messagebox__attachments * {
     max-height: 250px;
     max-width: 250px;
 }
-
-
 
 
 
