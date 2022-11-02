@@ -4,6 +4,14 @@ import pymongo
 from werkzeug.utils import secure_filename
 from bson import DBRef
 from datetime import datetime
+import bbcode
+
+parser = bbcode.Parser()
+parser.add_simple_formatter('spoiler', '<span class="spoiler">%(value)s</span>')
+
+
+parser.add_simple_formatter('wiki', '<a href="http://wikipedia.org/wiki/%(value)s">%(value)s</a>')
+
 
 def page_not_found(e):
     return render_template("404.html"), 404
@@ -40,7 +48,7 @@ def board(board):
         if db.dereference(t)["hidden"]:
             continue
         threads.append(db.dereference(t))
-    return render_template("board.html", threads=threads, db=db, isThread=False, board=b    )
+    return render_template("board.html", threads=threads, db=db, isThread=False, board=b, parser=parser)
 
 
 @app.route("/<board>/<int:thread_id>")
@@ -56,7 +64,7 @@ def thread(board, thread_id):
        DBRef("posts", thread["_id"], "yobach") not in b["threads"]:
         abort(404)
 
-    return render_template("thread.html", thread=thread, db=db, isThread=True, board=b)
+    return render_template("thread.html", thread=thread, db=db, isThread=True, board=b, parser=parser)
 
 
 @app.post('/api/upload')

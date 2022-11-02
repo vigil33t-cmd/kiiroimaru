@@ -6,7 +6,7 @@
     <div class="post__body">
         <div class="post__text">
             {% block post_text %}
-                {{ db.dereference(post)["text"] }}
+                {{ parser.format(db.dereference(post)["text"]) | safe }}
             {% endblock %}
         </div>
     </div>

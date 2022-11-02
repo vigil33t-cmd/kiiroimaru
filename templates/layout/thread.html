@@ -11,7 +11,7 @@
         </div>
         <div class="post__body">
             <div class="post__text">
-                {{ thread["text"] }}
+                {{ parser.format(thread["text"]) | safe }}
             </div>
             <div class="post__attachments">
 

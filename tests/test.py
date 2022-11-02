@@ -10,13 +10,13 @@ import requests as r
 # response = r.post("http://localhost:5000/api/thread.create", data=data)
 # print(response)
 
-# data = {
-#     "thread_id": 2,
-#     "text": "пук"
-# }
+data = {
+    "thread_id": 2,
+    "text": "line1\nline2"
+}
 
-# response = r.post("http://localhost:5000/api/thread.answer", data=data)
-# print(response)
+response = r.post("http://localhost:5000/api/thread.answer", data=data)
+print(response)
 
 # data = {
 #     "name": "bread",
@@ -26,9 +26,9 @@ import requests as r
 # response = r.post("http://localhost:5000/api/board.create", data=data)
 # print(response)
 
-data = {
-    "post_id": 4,
-}
+# data = {
+#     "post_id": 4,
+# }
 
-response = r.post("http://localhost:5000/api/post.hide", data=data)
-print(response)
+# response = r.post("http://localhost:5000/api/post.hide", data=data)
+# print(response)
