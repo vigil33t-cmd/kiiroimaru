@@ -16,9 +16,14 @@
             <div class="post__attachments">
 
             </div>
+            {% if thread['replies'] %}
             <div class="post__replies">
-                
-            </div>
+                    {% for reply in thread['replies'] %}
+                        <a href="#" post_id="{{ db.dereference(reply)['id']}}">>>{{ db.dereference(reply)['id']}}</a>
+                    {% endfor %}
+                    
+                </div>
+            {% endif %}
         </div>
     </div>
     {% if isThread == false %}

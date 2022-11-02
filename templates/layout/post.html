@@ -10,7 +10,11 @@
             {% endblock %}
         </div>
     </div>
+    {% if db.dereference(post)['replies'] %}
     <div class="post__replies">
-
+        {% for reply in db.dereference(post)['replies'] %}
+                <a href="#" post_id="{{ db.dereference(reply)['id']}}">>>{{ db.dereference(reply)['id']}}</a>
+        {% endfor %}
     </div>
+    {% endif %}
 </div>

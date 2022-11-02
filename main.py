@@ -110,11 +110,11 @@ def thread_answer():
 
     thread_id = int(data.get("thread_id"))
     text = data.get("text")
-    regex = re.search(r"\B>>[0-9]+\b", text)
-    if regex:
-        print(regex)
+        
     post_id = db.posts.count_documents({}) + 1
     post_time = datetime.now().strftime("%d/%m/%Y %H:%M")
+    if not db.posts.find_one({"id": thread_id})['is_thread']:
+        return ""
 
     inserted_post_id = db.posts.insert_one({
         "id": post_id,
@@ -126,6 +126,12 @@ def thread_answer():
     }).inserted_id
 
     ref = DBRef("posts", inserted_post_id, "yobach")
+    regex = re.findall(r"\B>>[0-9]+\b", text)
+    if regex:
+        for reply in regex:
+            if DBRef('posts', inserted_post_id, 'yobach') in db.posts.find_one({"id": int(reply[2::])})['replies']:
+                continue
+            db.posts.update_one({"id": int(reply[2::])}, {'$push': {"replies": ref}})
     db.posts.update_one({"id": thread_id}, {'$push': {"posts": ref}})
 
     return ""

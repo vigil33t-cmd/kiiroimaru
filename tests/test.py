@@ -11,8 +11,8 @@ import requests as r
 # print(response)
 
 data = {
-    "thread_id": 2,
-    "text": ">>1"
+    "thread_id": 1,
+    "text": ">>2 я хуй >>2"
 }
 
 response = r.post("http://localhost:5000/api/thread.answer", data=data)
