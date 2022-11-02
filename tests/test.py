@@ -1,5 +1,8 @@
 import requests as r
 
+with open('pepe.jpg', 'rb') as f:
+    r.post('http://127.0.0.1:5000/api/upload', files={'attachment':f})
+    
 
 # data = {
 #     "board_id": 1,
@@ -10,13 +13,13 @@ import requests as r
 # response = r.post("http://localhost:5000/api/thread.create", data=data)
 # print(response)
 
-data = {
-    "thread_id": 1,
-    "text": ">>2 я хуй >>2"
-}
+# data = {
+#     "thread_id": 1,
+#     "text": ">>2 я хуй >>2"
+# }
 
-response = r.post("http://localhost:5000/api/thread.answer", data=data)
-print(response)
+# response = r.post("http://localhost:5000/api/thread.answer", data=data)
+# print(response)
 
 # data = {
 #     "name": "bread",

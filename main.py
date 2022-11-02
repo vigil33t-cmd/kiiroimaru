@@ -1,4 +1,5 @@
 import re
+from uuid import uuid4
 from pymongo import MongoClient
 from flask import Flask, request, render_template, abort
 import pymongo
@@ -70,12 +71,12 @@ def thread(board, thread_id):
 
 @app.post('/api/upload')
 def upload_file():
-    f = request.files['file']
-    if allowed_file(f.filename):
-        print(f.filename)
-        f.save(secure_filename(f.filename))            
-        return ""
-    return "invalid filetype"
+    file = request.files['attachment']
+    uuid = str(uuid4())
+    db.attachments.insert_one({"origin_filename": file.filename, "id":uuid})
+    file.save(f'attachments/{uuid}.{file.filename.split(".")[-1]}')
+    print(file.filename)
+    return ""
 
 @app.post("/api/thread.create")
 def thread_create():
@@ -135,6 +136,7 @@ def thread_answer():
     db.posts.update_one({"id": thread_id}, {'$push': {"posts": ref}})
 
     return ""
+
 
 @app.post("/api/board.create")
 def board_create():
