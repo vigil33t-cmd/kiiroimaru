@@ -12,7 +12,7 @@ import requests as r
 
 data = {
     "thread_id": 2,
-    "text": "line1\nline2"
+    "text": ">>1"
 }
 
 response = r.post("http://localhost:5000/api/thread.answer", data=data)

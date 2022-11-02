@@ -1,3 +1,4 @@
+import re
 from pymongo import MongoClient
 from flask import Flask, request, render_template, abort
 import pymongo
@@ -8,7 +9,7 @@ import bbcode
 
 parser = bbcode.Parser()
 parser.add_simple_formatter('spoiler', '<span class="spoiler">%(value)s</span>')
-
+# parser.add_simple_formatter('>', "<span class='greentext'>>%(value)s</span>")
 
 parser.add_simple_formatter('wiki', '<a href="http://wikipedia.org/wiki/%(value)s">%(value)s</a>')
 
@@ -109,7 +110,9 @@ def thread_answer():
 
     thread_id = int(data.get("thread_id"))
     text = data.get("text")
-
+    regex = re.search(r"\B>>[0-9]+\b", text)
+    if regex:
+        print(regex)
     post_id = db.posts.count_documents({}) + 1
     post_time = datetime.now().strftime("%d/%m/%Y %H:%M")
 
