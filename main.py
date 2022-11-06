@@ -9,7 +9,6 @@ from datetime import datetime
 import bbcode
 import json
 
-# parser = bbcode.Parser()
 parser = bbcode.Parser(install_defaults=False)
 parser.add_simple_formatter('spoiler', '<span class="spoiler">%(value)s</span>')
 parser.add_simple_formatter("b", "<strong>%(value)s</strong>")
@@ -98,8 +97,8 @@ def thread_create():
     post_time = datetime.now().strftime("%d/%m/%Y %H:%M")
     attachment = []
     if "attachment" in data:
-        
         attachment = DBRef('attachments', db.attachments.find_one({"id":data['attachment']}), 'yobach')
+        
     # мб потом завернуть создание ссылки в функцию
     inserted_post_id = db.posts.insert_one({
         "id": post_id,
@@ -129,9 +128,6 @@ def thread_answer():
         return ""
     attachment = []
     if "attachment" in data:
-        # print(data['attachment'])
-        # attachment = db.attachments.find_one({"id":str(data['attachment'])})
-        # print(attachment)
         attachment = DBRef('attachments', db.attachments.find_one({"id":data['attachment']})['_id'], 'yobach')
     inserted_post_id = db.posts.insert_one({
         "id": post_id,
