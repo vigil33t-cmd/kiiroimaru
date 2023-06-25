@@ -4,7 +4,7 @@ import re
 from PIL import Image
 from uuid import uuid4
 from pymongo import MongoClient
-from flask import Flask, jsonify, request, render_template, abort, url_for, send_from_directory
+from flask import Flask, jsonify, redirect, request, render_template, abort, url_for, send_from_directory
 import pymongo
 from werkzeug.utils import secure_filename
 from bson import DBRef
@@ -105,7 +105,7 @@ def upload_file():
 @app.post("/api/thread.create")
 def thread_create():
     data = request.values
-    
+
     board_id = int(data.get("board_id"))
     title = data.get("title")
     text = data.get("text")
@@ -115,7 +115,7 @@ def thread_create():
     attachment = []
     if "attachment" in data:
         attachment = DBRef('attachments', db.attachments.find_one({"id":data['attachment']}), 'yobach')
-        
+
     # мб потом завернуть создание ссылки в функцию
     inserted_post_id = db.posts.insert_one({
         "id": post_id,
@@ -138,7 +138,8 @@ def thread_answer():
 
     thread_id = int(data.get("thread_id"))
     text = data.get("text")
-        
+    if text == "":
+        abort(404)
     post_id = db.posts.count_documents({}) + 1
     post_time = datetime.now().strftime("%d/%m/%Y %H:%M")
     if not db.posts.find_one({"id": thread_id})['is_thread']:
@@ -151,7 +152,7 @@ def thread_answer():
         "id": post_id,
         "timestamp": post_time,
         "is_thread": False,
-        "thread_id": thread_id, # Вместо айди поместить сюда DBRef ссылку на тред?
+        "thread_id": thread_id,  # Вместо айди поместить сюда DBRef ссылку на тред?
         "text": text,
         "hidden": False,
         "attachments": attachment,
@@ -164,8 +165,7 @@ def thread_answer():
                 continue
             db.posts.update_one({"id": int(reply[2::])}, {'$push': {"replies": ref}})
     db.posts.update_one({"id": thread_id}, {'$push': {"posts": ref, "attachment": attachment}})
-
-    return ""
+    return redirect(url_for('thread', board=request.referrer.split("/")[-2], thread_id = request.referrer.split("/")[-1]), 301)
 
 
 @app.post("/api/board.create")
