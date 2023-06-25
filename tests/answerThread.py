@@ -9,8 +9,9 @@ with open('tests/anime.jpg', 'rb') as f:
 data = {
     "thread_id": 1,
     "text": "[b]asdasd[/b]",
-    "attachment": loads(request.content.decode())['id']
+    "attachment": loads(request.content.decode())['id'],
 }
 
 response = r.post("http://localhost:5000/api/thread.answer", data=data)
 print(response)
+    

@@ -12,6 +12,7 @@ from datetime import datetime
 import bbcode
 import json
 import sys
+import magic
 
 parser = bbcode.Parser(install_defaults=False)
 parser.add_simple_formatter('spoiler', '<span class="spoiler">%(value)s</span>')
@@ -29,7 +30,7 @@ app.config['UPLOAD_FOLDER'] = 'uploads'
 
 app.register_error_handler(404, page_not_found)
 
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'bmp'}
 CONNECTION_STRING = "mongodb://127.0.0.1:27017"
 
 client = MongoClient(CONNECTION_STRING)
@@ -87,10 +88,16 @@ def get_attachment(board, post_id):
 @app.post('/api/upload')
 def upload_file():
     data = request.values
-    file = request.files['attachment']
+    file = request.files.get('attachment')
     uuid = str(uuid4())
-    resolution = f"{Image.open(file).size[0]} x {Image.open(file).size[1]}"
-    # print()
+    print(file.mimetype)
+    # match 
+    #     case "image/jpeg": 
+    #     case "image/png":
+    #     case "image/gif":
+    #     case 'image/bmp':
+    
+    resolution = []
     if not os.path.exists("attachments"):
         os.mkdir("attachments")
     file.save(f'attachments/{uuid}.{file.filename.split(".")[-1]}')
@@ -98,7 +105,7 @@ def upload_file():
                                "resolution": resolution,
                                "size": len(file.read()),
                                "id": uuid})
-    print(file.filename)
+    print(file.content_length)
     return jsonify({"id": uuid})
 
 @app.post("/api/thread.create")
@@ -145,6 +152,7 @@ def thread_answer():
     attachment = []
     if "attachment" in data:
         attachment = DBRef('attachments', db.attachments.find_one({"id":data['attachment']})['_id'], 'yobach')
+        
     inserted_post_id = db.posts.insert_one({
         "id": post_id,
         "timestamp": post_time,
