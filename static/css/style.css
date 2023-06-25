@@ -70,16 +70,16 @@ body {
 }
 
 
-.attachment {
+/* .attachment {
     flex-basis: 200px;
-}
+} */
 
 .attachment__info {
     opacity: 0.4;
 }
 
 .attachment__content * {
-    width: 100%;
+    width: 20%;
     height: 100%;
     outline: 1px dashed blue;
     outline-offset: 1px;

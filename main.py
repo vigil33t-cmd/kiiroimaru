@@ -56,7 +56,7 @@ def board(board):
         if db.dereference(t)["hidden"]:
             continue
         threads.append(db.dereference(t))
-    return render_template("board.html", threads=threads, db=db, isThread=False, board=b, parser=parser, )
+    return render_template("board.html", threads=threads, db=db, isThread=False, board=b, parser=parser, round=round )
 
 
 @app.route("/<board>/<int:thread_id>")
@@ -77,12 +77,12 @@ def thread(board, thread_id):
                            db=db,
                            isThread=True,
                            board=b,
-                           parser=parser)
+                           parser=parser,
+                           round=round)
 
 @app.route("/<board>/attachment/<int:post_id>/")
 def get_attachment(board, post_id):
     attachment = db.dereference(db.posts.find_one({"id":post_id})['attachments'])
-    print(attachment)
     return send_from_directory("attachments", f"{attachment['id']}.{attachment['origin_filename'].split('.')[-1]}", download_name=attachment['origin_filename'])
 
 @app.post('/api/upload')
@@ -90,17 +90,11 @@ def upload_file():
     data = request.values
     file = request.files.get('attachment')
     uuid = str(uuid4())
-    print(file.mimetype)
-    # match 
-    #     case "image/jpeg": 
-    #     case "image/png":
-    #     case "image/gif":
-    #     case 'image/bmp':
-    
-    resolution = []
+    file.save(f'attachments/{uuid}.{file.filename.split(".")[-1]}')
+    with Image.open(file) as image:
+        resolution = [image.size[0], image.size[1]]
     if not os.path.exists("attachments"):
         os.mkdir("attachments")
-    file.save(f'attachments/{uuid}.{file.filename.split(".")[-1]}')
     db.attachments.insert_one({"origin_filename": file.filename,
                                "resolution": resolution,
                                "size": len(file.read()),

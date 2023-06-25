@@ -1,5 +1,5 @@
 <div class="attachment">
-    <div class="attachment__info">{{ db.dereference(db.dereference(post)['attachments'])['origin_filename'] }} {{ db.dereference(db.dereference(post)['attachments'])['resolution'] }} {{ db.dereference(db.dereference(post)['attachments'])['size'] }}</div>
+    <div class="attachment__info">{{ db.dereference(db.dereference(post)['attachments'])['origin_filename'] }} {{ db.dereference(db.dereference(post)['attachments'])['resolution'][0] }} x {{ db.dereference(db.dereference(post)['attachments'])['resolution'][1] }} ({{ round(db.dereference(db.dereference(post)['attachments'])['size'] / (1024 * 1024), 2)}} mb)</div>
     <div class="attachment__content">
-        <img src="/{{board["board_name"]}}/attachment/{{db.dereference(post)['id']}}/" alt="">
+        <img src="/{{board["board_name"]}}/attachment/{{db.dereference(post)['id']}}/" alt="{{ db.dereference(db.dereference(post)['attachments'])['origin_filename'] }}">
     </div>
