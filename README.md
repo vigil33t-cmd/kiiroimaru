@@ -1,4 +1,5 @@
 <div align="center">
+	<img src="images/logo.png" alt="meteor-plus" width="20%"/>
 	<h1>Kiiroimaru</h1>
 	<p>
 		A rip-off of <a href="https://2ch.hk/">2ch</a>.
