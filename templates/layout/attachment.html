@@ -1,6 +1,5 @@
 <div class="attachment">
-    <div class="attachment__info">pezda.jpg 128x128 (8mb)</div>
+    <div class="attachment__info">{{ db.dereference(db.dereference(post)['attachments'])['origin_filename'] }} {{ db.dereference(db.dereference(post)['attachments'])['resolution'] }} {{ db.dereference(db.dereference(post)['attachments'])['size'] }}</div>
     <div class="attachment__content">
-        <img src="static/img/cUEkGWhuZqo.jpg" alt="">
+        <img src="/{{board["board_name"]}}/attachment/{{db.dereference(post)['id']}}/" alt="">
     </div>
-</div>

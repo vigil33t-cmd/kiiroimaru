@@ -13,10 +13,7 @@
     </div>
     {% if db.dereference(post)['attachments'] %}
     <div class="post__attachments">
-        <div class="attachment">
-            <div class="attachment__info">pezda.jpg 128x128 (8mb)</div>
-            <div class="attachment__content">
-                <img src="/{{board["board_name"]}}/attachment/{{db.dereference(post)['id']}}/" alt="">
+        {% include "layout/attachment.html" %}
             </div>
         </div>
     </div>

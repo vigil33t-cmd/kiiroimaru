@@ -17,10 +17,8 @@
             
             {% if thread[attachment] %}
             <div class="post__attachments">
-                        <div class="attachment">
-                            <div class="attachment__info">pezda.jpg 128x128 (8mb)</div>
-                            <div class="attachment__content">
-                                <img src="/{{board["board_name"]}}/attachment/{{thread['id']}}/" alt="">
+                {% include "layout/attachment.html" %}
+                                <!-- <img src="/{{board["board_name"]}}/attachment/{{thread['id']}}/" alt=""> -->
                             </div>
                         </div>
                     </div>

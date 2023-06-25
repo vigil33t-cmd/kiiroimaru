@@ -1,4 +1,7 @@
+from io import BytesIO
+import os
 import re
+from PIL import Image
 from uuid import uuid4
 from pymongo import MongoClient
 from flask import Flask, jsonify, request, render_template, abort, url_for, send_from_directory
@@ -8,6 +11,7 @@ from bson import DBRef
 from datetime import datetime
 import bbcode
 import json
+import sys
 
 parser = bbcode.Parser(install_defaults=False)
 parser.add_simple_formatter('spoiler', '<span class="spoiler">%(value)s</span>')
@@ -26,7 +30,7 @@ app.config['UPLOAD_FOLDER'] = 'uploads'
 app.register_error_handler(404, page_not_found)
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-CONNECTION_STRING = "mongodb://90.151.59.128:27017"
+CONNECTION_STRING = "mongodb://127.0.0.1:27017"
 
 client = MongoClient(CONNECTION_STRING)
 db = client['yobach']
@@ -67,7 +71,12 @@ def thread(board, thread_id):
        DBRef("posts", thread["_id"], "yobach") not in b["threads"]:
         abort(404)
 
-    return render_template("thread.html", thread=thread, db=db, isThread=True, board=b, parser=parser)
+    return render_template("thread.html",
+                           thread=thread,
+                           db=db,
+                           isThread=True,
+                           board=b,
+                           parser=parser)
 
 @app.route("/<board>/attachment/<int:post_id>/")
 def get_attachment(board, post_id):
@@ -80,10 +89,17 @@ def upload_file():
     data = request.values
     file = request.files['attachment']
     uuid = str(uuid4())
-    db.attachments.insert_one({"origin_filename": file.filename, "id":uuid})
+    resolution = f"{Image.open(file).size[0]} x {Image.open(file).size[1]}"
+    # print()
+    if not os.path.exists("attachments"):
+        os.mkdir("attachments")
     file.save(f'attachments/{uuid}.{file.filename.split(".")[-1]}')
+    db.attachments.insert_one({"origin_filename": file.filename,
+                               "resolution": resolution,
+                               "size": len(file.read()),
+                               "id": uuid})
     print(file.filename)
-    return jsonify({"id":uuid})
+    return jsonify({"id": uuid})
 
 @app.post("/api/thread.create")
 def thread_create():
@@ -176,7 +192,7 @@ def post_hide():
 
     return ""
 
-@app.post("/api/post.unhide") # post.show?
+@app.post("/api/post.unhide")  # post.show?
 def post_unhide():
     data = request.values
     post_id = int(data.get("post_id"))
