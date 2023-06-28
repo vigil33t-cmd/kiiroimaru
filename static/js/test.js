@@ -25,11 +25,11 @@ f.onchange = (event) => {
 
 send.onclick = (event) => {
     if (files.length > 0)
-        data.append("files", files)
+        data.append("attachment", files[0])
     if (message.value)
         data.append("message", message.value)
     if (files.length > 0 || message.value) {
-        request.open("POST", "/api/post");
+        request.open("POST", "/api/thread.answer");
         request.send(data);
     }
     

@@ -135,7 +135,7 @@ def thread_create():
 @app.post("/api/thread.answer")
 def thread_answer():
     data = request.values
-
+    print(data)
     thread_id = int(data.get("thread_id"))
     text = data.get("text")
     if text == "":
